@@ -15,10 +15,14 @@ const poolConfig = {
 };
 
 // Render PostgreSQL requiere SSL para conexiones externas (como desarrollo local)
-if (process.env.NODE_ENV === "production" || connectionString.includes(".render.com")) {
-  poolConfig.ssl = {
-    rejectUnauthorized: false
-  };
+const poolConfig = {
+  connectionString,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+  ssl: {
+    rejectUnauthorized: false // <--- Agregado directamente aquí
+  }
 }
 
 const pgPool = new pg.Pool(poolConfig);
