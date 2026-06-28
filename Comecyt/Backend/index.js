@@ -32,6 +32,7 @@ const openai = new OpenAI({
 });
 
 const allowedOrigins = [
+  "https://comecyt.vercel.app",
   "https://comecyt-wb2i.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
