@@ -20,6 +20,9 @@ import certificadosRoutes from "./routes/certificados.js";
 dotenv.config();
 
 const app = express();
+console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+console.log("VERSION NUEVA DEL INDEX");
+console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
 // Variables de WhatsApp
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN;
