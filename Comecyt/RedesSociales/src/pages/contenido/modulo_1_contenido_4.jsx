@@ -6,7 +6,8 @@ import "../../Css/modulo_1_contenido_4.css";
 
 const MODULO_ID = 1;
 const NUM_CONTENIDO = 4;
-const API_URL = "http://localhost:4000";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function ContenidoGmailPanelYRedaccion() {
   // ---- estados generales ----
