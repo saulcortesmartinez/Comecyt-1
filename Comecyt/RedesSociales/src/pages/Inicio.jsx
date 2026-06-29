@@ -137,7 +137,13 @@ export default function Inicio() {
         const resp = await axios.post(
           `${API_URL}/api/alumno/progreso`,
           { correo },
-          { headers: { Authorization: `Bearer ${token}` } }
+          token
+          ? {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+          : {}
         );
 
         setProgresoData(resp.data);
