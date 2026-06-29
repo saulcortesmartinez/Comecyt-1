@@ -211,13 +211,25 @@ function LoginPage() {
           return;
         }
 
+       // let endpoint = "";
+        //if (rolSeleccionado === "alumno") {
+         // endpoint = "http://localhost:4000/api/alumno/registrar";
+        //} else if (rolSeleccionado === "docente") {
+         // endpoint = "http://localhost:4000/api/admin/docentes";
+       // } else if (rolSeleccionado === "admin") {
+     //     endpoint = "http://localhost:4000/api/admin/registrar";
+       // }
+
+        //nuevo cambio
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
         let endpoint = "";
+
         if (rolSeleccionado === "alumno") {
-          endpoint = "http://localhost:4000/api/alumno/registrar";
+          endpoint = `${API_URL}/api/alumno/registrar`;
         } else if (rolSeleccionado === "docente") {
-          endpoint = "http://localhost:4000/api/admin/docentes";
+          endpoint = `${API_URL}/api/admin/docentes`;
         } else if (rolSeleccionado === "admin") {
-          endpoint = "http://localhost:4000/api/admin/registrar";
+          endpoint = `${API_URL}/api/admin/registrar`;
         }
 
         await axios.post(endpoint, {
