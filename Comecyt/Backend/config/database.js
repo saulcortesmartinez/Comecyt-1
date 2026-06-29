@@ -6,16 +6,22 @@ dotenv.config();
 // Determinar la URL de conexión (usa la del .env o la predeterminada de Render)
 const connectionString = process.env.DATABASE_URL || "postgresql://agora_comecyt_user:5URTzhfPOCVRfzOjVwJlqRHXbfqsQ7Iq@dpg-d8o67136sc1c73bb6ps0-a/agora_comecyt";
 
+console.log("================================");
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
+console.log("PGHOST:", process.env.PGHOST);
+console.log("PGDATABASE:", process.env.PGDATABASE);
+console.log("PGPORT:", process.env.PGPORT);
+console.log("PGSSLMODE:", process.env.PGSSLMODE);
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("================================");
 // Configuración del pool de PostgreSQL
 const poolConfig = {
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000, // Aumentado a 5s para evitar timeouts en Railway
-  ssl: {
-    rejectUnauthorized: false // <--- Forzamos esto siempre para entornos cloud
-  }
+  connectionTimeoutMillis: 5000,
 };
+
 
 // Usar SSL en entornos externos como Railway o Render
 const isProduction = process.env.NODE_ENV === "production";
@@ -28,6 +34,11 @@ if (needsSsl) {
 }
 
 const pgPool = new pg.Pool(poolConfig);
+
+pgPool.on('error', (err) => {
+  console.error('❌ [PG-DB] Error inesperado en el pool:', err);
+});
+
 
 // Función auxiliar para traducir consultas SQL de formato MySQL a PostgreSQL
 function translateSqlToPg(sql, values) {
