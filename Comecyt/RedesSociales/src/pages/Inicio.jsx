@@ -6,7 +6,8 @@ import { AuthContext } from "../context/AuthContext";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import "../Css/Inicio.css";
 
-const API_URL = "http://localhost:4000";
+//const API_URL = "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function Inicio() {
   const { user } = useContext(AuthContext);
