@@ -8,13 +8,14 @@ const DudasWhatsapp = () => {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
 
-    const API_URL = 'http://localhost:4000/api/dudas';
+    //const API_URL = 'http://localhost:4000/api/dudas';
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const cargarDudas = async () => {
         try {
             setError('');
-            const { data } = await axios.get(API_URL);
-
+            //const { data } = await axios.get(API_URL);
+            const { data } = await axios.get(`${API_URL}/api/dudas`);
             // Tu API regresa {dudas: [...], stats: {...}}
             setDudas(data.dudas || []);
             setStats(data.stats || { total: 0, nuevas: 0, respondidas: 0, cerradas: 0 });
@@ -36,7 +37,10 @@ const DudasWhatsapp = () => {
 
     const cambiarEstado = async (id, nuevoEstado) => {
         try {
-            await axios.put(`${API_URL}/${id}`, { estado: nuevoEstado });
+//            await axios.put(`${API_URL}/${id}`, { estado: nuevoEstado });
+            await axios.put(`${API_URL}/api/dudas/${id}`, {
+                estado: nuevoEstado
+            });
             cargarDudas();
         } catch (error) {
             console.error('Error actualizando:', error);
