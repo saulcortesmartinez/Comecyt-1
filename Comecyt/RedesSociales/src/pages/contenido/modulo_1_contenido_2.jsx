@@ -296,11 +296,12 @@ export default function ContenidoCrearCorreoGmail() {
                 </p>
               </div>
               <figure className="media media-side">
-                <img
+                {/*   <img
                   src={requisitosImg}
                   alt="Elementos necesarios para crear una cuenta de Gmail"
                   className="side-image"
                 />
+                */}
                 <figcaption>
                   Elementos recomendados antes de iniciar el registro.
                 </figcaption>
