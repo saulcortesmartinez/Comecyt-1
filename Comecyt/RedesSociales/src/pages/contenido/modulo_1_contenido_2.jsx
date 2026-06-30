@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../Css/modulo_1_contenido_2.css";
+import placeholder from "../../assets/placeholder.png";
 
 
 const MODULO_ID = 1;
@@ -296,12 +297,12 @@ export default function ContenidoCrearCorreoGmail() {
                 </p>
               </div>
               <figure className="media media-side">
-                {/*   <img
-                  src={requisitosImg}
+                <img
+                  src={placeholder}
                   alt="Elementos necesarios para crear una cuenta de Gmail"
                   className="side-image"
                 />
-                */}
+                
                 <figcaption>
                   Elementos recomendados antes de iniciar el registro.
                 </figcaption>
