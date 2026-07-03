@@ -4,6 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../Css/modulo_1_contenido_7.css";
 
+import fotoPerfilImg from "../../assets/fotoPerfilImg.png";
+import firmaImg from "../../assets/firmaImg.png";
+import notificaciones2Img from "../../assets/notificaciones2Img.png";
+import notificacionesImg from "../../assets/notificacionesImg.png";
+import seguridadImg from "../../assets/seguridadImg.png";
+import temaImg from "../../assets/temaImg.png";
 
 const API_URL = "http://localhost:4000";
 const MODULO_ID = 1;
