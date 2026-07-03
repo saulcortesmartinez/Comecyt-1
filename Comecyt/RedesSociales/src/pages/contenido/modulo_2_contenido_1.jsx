@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../Css/modulo_2_contenido_1.css";
 
+import fbIntroImg from "../../assets/fb_intro_img.png";
+import fbObjetivosImg from "../../assets/fb_objetivos_img.png";
+import fbImg from "../../assets/fb_img.png";
+import fbAlcanceImg from "../../assets/fb_alcance_img.png";
+import fbMarketImg from "../../assets/fb_market_img.png";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const MODULO_ID = 2; // ✅ Es módulo 2
