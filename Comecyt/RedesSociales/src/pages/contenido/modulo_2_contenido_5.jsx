@@ -11,7 +11,7 @@ import Seguridad2_fbImg from "../../assets/Seguridad2_fb.png";
 import Paso2_fbImg from "../../assets/Paso2_fb.png";
 import RecuperarCon_fbImg from "../../assets/RecuperarCon_fb.png";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://backend-production-0a25.up.railway.app";
 const MODULO_ID = 2; // ✅ Es módulo 2
 const NUM_CONTENIDO = 5;
 
