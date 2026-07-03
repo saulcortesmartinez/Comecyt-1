@@ -428,4 +428,32 @@ router.get('/usuarios-direct', async (req, res) => {
   }
 });
 
+// GET /api/admin/alumnos-progreso - Ruta agregada para el frontend
+router.get('/alumnos-progreso', async (req, res) => {
+  try {
+    console.log('📊 [ADMIN] Solicitando progreso de alumnos...');
+    
+    // Aquí usamos una consulta similar a tu 'alumnos-direct' 
+    // Asegúrate de ajustarla si tienes una tabla real de progreso general
+    const [alumnos] = await db.query(`
+      SELECT 
+        alumno_id,
+        nombre,
+        apellido,
+        correo,
+        CONCAT(nombre, ' ', apellido) as nombre_completo,
+        DATE_FORMAT(fecha_registro, '%d/%m/%Y') as fecha_registro,
+        0 as progreso_general,  
+        'N/A' as modulo_actual
+      FROM ALUMNO
+      ORDER BY fecha_registro DESC
+    `);
+    
+    res.json(alumnos);
+  } catch (error) {
+    console.error('💥 Error en alumnos-progreso:', error);
+    res.status(500).json({ error: 'Error al cargar el progreso de los alumnos' });
+  }
+});
+
 export default router;
