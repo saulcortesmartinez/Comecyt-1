@@ -12,6 +12,9 @@ import paso5FbImg from "../../assets/paso5FbImg.png";
 import paso6FbImg from "../../assets/paso6FbImg.png";
 import paso7FbImg from "../../assets/paso7FbImg.png";
 import paso8FbImg from "../../assets/paso8FbImg.png";
+import conexionImg from "../../assets/conexionImg.png";
+import publicacionesImg from "../../assets/publicacionesImg.png";
+import messengerImg from "../../assets/messengerImg.png";
 
 
 //const API_URL = "http://localhost:4000";
