@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../Css/modulo_3_contenido_1.css";
 
+import whatsappIntroImg from "../../assets/whatsappIntroImg.png";
+import whatsappWorldImg from "../../assets/whatsappWorldImg.png";
+import whatsappPersonalBusinessImg from "../../assets/whatsappPersonalBusinessImg.png";
+import whatsappSecurityImg from "../../assets/whatsappSecurityImg.png";
 
-const API_URL = "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL;
 const MODULO_ID = 3; // ✅ Es módulo 3
 const NUM_CONTENIDO = 1;
 
