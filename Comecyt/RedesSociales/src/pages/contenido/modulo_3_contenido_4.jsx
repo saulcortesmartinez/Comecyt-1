@@ -6,7 +6,13 @@ import "@/Css/modulo_3_contenido_4.css";
 
 // 🔹 Imágenes de ejemplo para los pasos (1–6)
 
-const API_URL = "http://localhost:4000";
+import whatsappSeguridadIntroImg from "../../assets/whatsappSeguridadIntroImg.png";
+import whatsappBackupImg from "../../assets/whatsappBackupImg.png";
+import whatsappEncryptionImg from "../../assets/whatsappEncryptionImg.png";
+import whatsappBlockImg from "../../assets/whatsappBlockImg.png";
+
+const API_URL = import.meta.env.VITE_API_URL
+
 const MODULO_ID = 3; // ✅ Es módulo 3
 const NUM_CONTENIDO = 4;
 const TOTAL_PREGUNTAS = 6;
