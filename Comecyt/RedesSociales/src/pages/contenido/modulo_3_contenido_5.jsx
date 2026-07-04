@@ -4,8 +4,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "@/Css/modulo_3_contenido_5.css";
 
+import wBusinessIntroImg from "../../assets/wBusinessIntroImg.png";
+import wBusinessPaso1 from "../../assets/wBusinessPaso1.png";
+import wBusinessPaso2 from "../../assets/wBusinessPaso2.png";
+import wBusinessPaso3 from "../../assets/wBusinessPaso3.png";
+import whatsappRegistroPaso3 from "../../assets/whatsappRegistroPaso3.png";
+import wBusinessPaso5 from "../../assets/wBusinessPaso5.png";
+import wBusinessPaso6 from "../../assets/wBusinessPaso6.png";
+import wBusinessPaso7 from "../../assets/wBusinessPaso7.png";
+import wBusinessBeneficiosImg from "../../assets/wBusinessBeneficiosImg.png";
+import wBusinessImpactoImg from "../../assets/wBusinessImpactoImg.png";
 
-const API_URL = "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL
 const MODULO_ID = 3; // ✅ Es módulo 3
 const NUM_CONTENIDO = 5;
 const TOTAL_PREGUNTAS = 6;
