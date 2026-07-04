@@ -5,8 +5,19 @@ import axios from "axios";
 import "../../Css/modulo_3_contenido_2.css";
 
 // 🔹 Imágenes de ejemplo para los pasos (1–6)
+import whatsappRegistroPaso1 from "../../assets/whatsappRegistroPaso1.png";
+import whatsappRegistroPaso2 from "../../assets/whatsappRegistroPaso2.png";
+import whatsappRegistroPaso3 from "../../assets/whatsappRegistroPaso3.png";
+import whatsappRegistroPaso4 from "../../assets/whatsappRegistroPaso4.png";
+import whatsappRegistroPaso5 from "../../assets/whatsappRegistroPaso5.png";
+import whatsappRegistroPaso6 from "../../assets/whatsappRegistroPaso6.png";
 
-const API_URL = "http://localhost:4000";
+import whatsappComunicacionImg from "../../assets/whatsappComunicacionImg.png";
+import whatsappLlamadasImg from "../../assets/whatsappLlamadasImg.png";
+import whatsappGruposImg from "../../assets/whatsappGruposImg.png";
+import whatsappEstadosImg from "../../assets/whatsappEstadosImg.png";
+
+const API_URL = import.meta.env.VITE_API_URL
 const MODULO_ID = 3; // ✅ Es módulo 3
 const NUM_CONTENIDO = 2;
 const TOTAL_PREGUNTAS = 6;
