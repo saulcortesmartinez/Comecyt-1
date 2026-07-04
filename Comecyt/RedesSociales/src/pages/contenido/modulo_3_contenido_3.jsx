@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "@/Css/modulo_3_contenido_3.css";
 
+import whatsappLlamadasImg from "../../assets/whatsappLlamadasImg.png";
+import whatsappGruposImg from "../../assets/whatsappGruposImg.png";
+import whatsappEstadosImg from "../../assets/whatsappEstadosImg.png";
+
 // 🔹 Imágenes de ejemplo para los pasos (1–6)
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
