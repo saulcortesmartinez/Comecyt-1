@@ -4,8 +4,19 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../Css/modulo_4_contenido_2.css";
 
+const imagenDePrueba = "https://placehold.co/600x400/eeeeee/999999?text=Imagen+de+Prueba";
+const igPaso1Img = imagenDePrueba;
+const igPaso2Img = imagenDePrueba;
+const igPaso3Img = imagenDePrueba;
+const igPaso4Img = imagenDePrueba;
+const igPaso5Img = imagenDePrueba;
+const igPaso6Img = imagenDePrueba;
+const igUsuarioBioImg = imagenDePrueba;
+const igFotoPerfilImg = imagenDePrueba;
+const igEnlacesContactoImg = imagenDePrueba;
+const igPrivacidadImg = imagenDePrueba;
 
-const API_URL = "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL
 const MODULO_ID = 4; // ✅ Es módulo 4
 const NUM_CONTENIDO = 2;
 const TOTAL_PREGUNTAS = 6;
