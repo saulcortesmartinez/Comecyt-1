@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../Css/CalificacionesDocente.css";
 
+const API_URL = "https://backend-production-0a25.up.railway.app";
+
 export default function CalificacionesDocente() {
   const [top5, setTop5] = useState([]);
   const [lista, setLista] = useState([]);
