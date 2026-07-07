@@ -26,7 +26,7 @@ export default function InicioDocente() {
     const fetchResumen = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4000/api/docente/dashboard-resumen"
+          "https://backend-production-0a25.up.railway.app/api/docente/dashboard-resumen"
         );
         setResumen(data || null);
         setError("");
