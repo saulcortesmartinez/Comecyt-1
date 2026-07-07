@@ -438,3 +438,27 @@ export const obtenerContenido = async (req, res) => {
     res.status(500).json({ error: "Error al obtener contenido" });
   }
 };
+
+export const obtenerContenidosCompletados = async (req, res) => {
+  try {
+    const { correo } = req.params;
+
+    const [rows] = await pool.query(
+      `SELECT
+          modulo_id,
+          contenido_id AS num_contenido
+       FROM contenidos_completados
+       WHERE correo = ?
+       ORDER BY modulo_id, contenido_id`,
+      [correo]
+    );
+
+    res.json(rows);
+
+  } catch (err) {
+    console.error("❌ Error obteniendo contenidos completados:", err);
+    res.status(500).json({
+      error: "Error obteniendo contenidos completados"
+    });
+  }
+};
