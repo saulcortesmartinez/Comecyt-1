@@ -11,7 +11,8 @@ import {
   obtenerIntentosEvaluacion,
   guardarResultadoEvaluacion,
   reiniciarEvaluacionModulo,
-  obtenerContenido // ✅ Ya importado
+  obtenerContenido,
+  obtenerContenidosCompletados
 } from "../controllers/alumnoController.js";
 import jwt from "jsonwebtoken";
 
@@ -49,6 +50,11 @@ router.post("/registrar", registrarAlumno);
 // --- RUTAS DE CONSULTA ---
 router.post("/progreso", obtenerProgresoAlumno);
 router.get("/progreso", verificarToken, obtenerProgresoAlumno);
+router.get(
+  "/progreso/contenidos-completados/:correo",
+  verificarToken,
+  obtenerContenidosCompletados
+);
 router.post("/datos", obtenerDatosAlumno);
 router.post("/certificados", obtenerCertificadosAlumno);
 
