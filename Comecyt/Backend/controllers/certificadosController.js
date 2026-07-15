@@ -13,7 +13,7 @@ export const generarCertificado = async (req, res) => {
   try {
     const { correo, modulo_id, nombreModulo } = req.body;
 
-    if (!correo || !modulo_id) {
+    if (!correo ||!modulo_id) {
       return res.status(400).json({
         message: "correo y modulo_id son obligatorios",
       });
@@ -40,8 +40,8 @@ export const generarCertificado = async (req, res) => {
 
     // 🔐 VALIDAR SI YA EXISTE
     const [certificadoExistente] = await pool.query(
-      `SELECT ruta_certificado 
-       FROM CERTIFICADO 
+      `SELECT ruta_certificado
+       FROM CERTIFICADO
        WHERE alumno_id =? AND modulo_id =?`,
       [alumno.alumno_id, modulo_id]
     );
@@ -53,6 +53,35 @@ export const generarCertificado = async (req, res) => {
         url: `/certificados/${certificadoExistente[0].ruta_certificado}`,
         yaExistia: true,
       });
+    }
+
+    // ✅ FIX DESBLOQUEO: Asegurar que el progreso esté marcado como completado antes de generar certificado
+    // Esto es lo que hace que el Inicio.jsx quite el Bloqueado 🔒
+    try {
+      // Obtiene cuantos contenidos tiene el modulo
+      const [totalRow] = await pool.query(
+        `SELECT COUNT(*) as total FROM CONTENIDO WHERE modulo_id =?`,
+        [modulo_id]
+      );
+      const totalContenidos = totalRow[0]?.total || 8;
+
+      // Fuerza el progreso al 100% del modulo para que desbloquee el siguiente
+      await pool.query(
+        `INSERT INTO PROGRESO (alumno_id, modulo_id, progreso_actual, porcentaje, fecha_actualizacion)
+         VALUES (?,?,?, 100, NOW())
+         ON DUPLICATE KEY UPDATE progreso_actual = GREATEST(progreso_actual,?), porcentaje = 100, fecha_actualizacion = NOW()`,
+        [alumno.alumno_id, modulo_id, totalContenidos, totalContenidos]
+      );
+
+      // También marca todos los contenidos como vistos en la tabla de detalle por si usas contenidos-completados
+      for(let i=1; i<=totalContenidos; i++){
+        await pool.query(
+          `INSERT IGNORE INTO PROGRESO_DETALLE (alumno_id, modulo_id, num_contenido, fecha_visto) VALUES (?,?,?, NOW())`,
+          [alumno.alumno_id, modulo_id, i]
+        );
+      }
+    } catch(e){
+      console.log("Advertencia: no se pudo forzar progreso para desbloqueo, continuando...", e.message);
     }
 
     // 📄 Nombre del archivo único con ID
@@ -69,15 +98,15 @@ export const generarCertificado = async (req, res) => {
 
     // 🟨 Marco dorado
     doc
-      .lineWidth(4)
-      .strokeColor("#C9A24D")
-      .rect(30, 30, pageWidth - 60, pageHeight - 60)
-      .stroke();
+     .lineWidth(4)
+     .strokeColor("#C9A24D")
+     .rect(30, 30, pageWidth - 60, pageHeight - 60)
+     .stroke();
 
     doc
-      .lineWidth(1)
-      .rect(40, 40, pageWidth - 80, pageHeight - 80)
-      .stroke();
+     .lineWidth(1)
+     .rect(40, 40, pageWidth - 80, pageHeight - 80)
+     .stroke();
 
     // 🟢 Logo
     if (fs.existsSync(LOGO_PATH)) {
@@ -86,32 +115,32 @@ export const generarCertificado = async (req, res) => {
 
     // 🟨 Título
     doc
-      .moveDown(9)
-      .font("Helvetica-Bold")
-      .fontSize(32)
-      .fillColor("#C9A24D")
-      .text("CERTIFICADO", { align: "center" });
+     .moveDown(9)
+     .font("Helvetica-Bold")
+     .fontSize(32)
+     .fillColor("#C9A24D")
+     .text("CERTIFICADO", { align: "center" });
 
     doc
-      .fontSize(14)
-      .fillColor("#444")
-      .text("DE TÉRMINO", { align: "center" });
+     .fontSize(14)
+     .fillColor("#444")
+     .text("DE TÉRMINO", { align: "center" });
 
     // Texto introductorio
     doc.moveDown(2);
     doc
-      .font("Helvetica")
-      .fontSize(14)
-      .fillColor("#2F5D3A")
-      .text("TENEMOS EL HONOR DE EXTENDER ESTE CERTIFICADO A", { align: "center" });
+     .font("Helvetica")
+     .fontSize(14)
+     .fillColor("#2F5D3A")
+     .text("TENEMOS EL HONOR DE EXTENDER ESTE CERTIFICADO A", { align: "center" });
 
     // 🟢 NOMBRE COMPLETO DEL ALUMNO - Aquí va Julieta Alcántara Monroy, María Guadalupe García González, etc
     doc.moveDown(1.5);
     doc
-      .font("Times-BoldItalic")
-      .fontSize(32) // Un poco más chico por si es nombre largo
-      .fillColor("#2F5D3A")
-      .text(nombreCompleto, {
+     .font("Times-BoldItalic")
+     .fontSize(32) // Un poco más chico por si es nombre largo
+     .fillColor("#2F5D3A")
+     .text(nombreCompleto, {
         align: "center",
         width: pageWidth - 100
       });
@@ -119,10 +148,10 @@ export const generarCertificado = async (req, res) => {
     // Texto curso
     doc.moveDown(1.5);
     doc
-      .font("Helvetica")
-      .fontSize(14)
-      .fillColor("#444")
-      .text(
+     .font("Helvetica")
+     .fontSize(14)
+     .fillColor("#444")
+     .text(
         `Por concluir satisfactoriamente el programa:\n\n"${nombreModulo || 'Curso de Redes Sociales y Ciberseguridad ÁGORA'}"`,
         { align: "center" }
       );
@@ -130,38 +159,38 @@ export const generarCertificado = async (req, res) => {
     // ✅ TEXTO DE AGRADECIMIENTO
     doc.moveDown(2);
     doc
-      .font("Helvetica-Oblique")
-      .fontSize(12)
-      .fillColor("#666")
-      .text(
+     .font("Helvetica-Oblique")
+     .fontSize(12)
+     .fillColor("#666")
+     .text(
         "Agradecemos profundamente su compromiso, dedicación y esfuerzo durante todo el programa. " +
         "Su perseverancia lo convierte en un miembro valioso de la comunidad ÁGORA. " +
         "Le exhortamos a seguir aplicando estos conocimientos para crear un entorno digital más seguro.",
         { align: "center", width: pageWidth - 200 }
       );
 
-    // ✍️ Firma única centrada
+    // ✍ Firma única centrada
     doc.moveDown(3);
     const yFirma = doc.y;
 
     doc
-      .strokeColor("#999")
-      .lineWidth(1)
-      .moveTo(pageWidth / 2 - 100, yFirma)
-      .lineTo(pageWidth / 2 + 100, yFirma)
-      .stroke();
+     .strokeColor("#999")
+     .lineWidth(1)
+     .moveTo(pageWidth / 2 - 100, yFirma)
+     .lineTo(pageWidth / 2 + 100, yFirma)
+     .stroke();
 
     doc
-      .fontSize(12)
-      .fillColor("#555")
-      .text("FIRMA", pageWidth / 2 - 100, yFirma + 10, { width: 200, align: "center" });
+     .fontSize(12)
+     .fillColor("#555")
+     .text("FIRMA", pageWidth / 2 - 100, yFirma + 10, { width: 200, align: "center" });
 
     // Fecha y folio
     doc.moveDown(2);
     doc
-      .fontSize(10)
-      .fillColor("#999")
-      .text(`Fecha de emisión: ${new Date().toLocaleDateString('es-MX', {
+     .fontSize(10)
+     .fillColor("#999")
+     .text(`Fecha de emisión: ${new Date().toLocaleDateString('es-MX', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -169,9 +198,9 @@ export const generarCertificado = async (req, res) => {
 
     doc.moveDown(0.5);
     doc
-      .fontSize(9)
-      .fillColor("#BBB")
-      .text(`Folio: AGORA-${alumno.alumno_id}-${modulo_id}-${Date.now()}`, { align: "center" });
+     .fontSize(9)
+     .fillColor("#BBB")
+     .text(`Folio: AGORA-${alumno.alumno_id}-${modulo_id}-${Date.now()}`, { align: "center" });
 
     doc.end();
 
@@ -179,7 +208,7 @@ export const generarCertificado = async (req, res) => {
     stream.on("finish", async () => {
       try {
         await pool.query(
-          `INSERT INTO CERTIFICADO 
+          `INSERT INTO CERTIFICADO
            (alumno_id, modulo_id, ruta_certificado, fecha_emision)
            VALUES (?,?,?, NOW())`,
           [alumno.alumno_id, modulo_id, nombreArchivo]
