@@ -6,7 +6,6 @@ import { AuthContext } from "../context/AuthContext";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import "../Css/Inicio.css";
 
-//const API_URL = "http://localhost:4000";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function Inicio() {
@@ -129,16 +128,17 @@ export default function Inicio() {
         const correo = localStorage.getItem("correo");
         const token = localStorage.getItem("token");
 
-        if (!correo || !token) {
+        if (!correo ||!token) {
           navigate("/login");
           return;
         }
 
+        // 1. Trae el progreso principal
         const resp = await axios.post(
           `${API_URL}/api/alumno/progreso`,
           { correo },
           token
-          ? {
+         ? {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -146,7 +146,39 @@ export default function Inicio() {
           : {}
         );
 
-        setProgresoData(resp.data);
+        let data = resp.data;
+
+        // 2. FIX DESBLOQUEO: Trae también los contenidos completados (el mismo que usa Temario.jsx)
+        try {
+          const resp2 = await axios.get(
+            `${API_URL}/api/alumno/progreso/contenidos-completados/${correo}`,
+            token? { headers: { Authorization: `Bearer ${token}` } } : {}
+          );
+
+          // Reconstruye el progreso_actual real basado en lo que sí está en BD
+          const agrupados = {};
+          resp2.data.forEach(item => {
+            const num = item.num_contenido || item.contenido_id;
+            if(!agrupados[item.modulo_id]) agrupados[item.modulo_id] = [];
+            agrupados[item.modulo_id].push(num);
+          });
+
+          // Actualiza los modulos con el conteo real más alto
+          if(data.modulos){
+            data.modulos = data.modulos.map(m => {
+              const maxCompletado = agrupados[m.modulo_id]? Math.max(...agrupados[m.modulo_id]) : 0;
+              // Si lo que hay en contenidos-completados es mayor, úsalo
+              if(maxCompletado > (m.progreso_actual || 0)){
+                return {...m, progreso_actual: maxCompletado};
+              }
+              return m;
+            });
+          }
+        } catch(e){
+          console.log("No se pudo traer completados, usando progreso principal", e);
+        }
+
+        setProgresoData(data);
       } catch (err) {
         console.error("Error obteniendo progreso:", err);
         if (err.response?.status === 401) {
@@ -190,8 +222,8 @@ export default function Inicio() {
 
   // --- Nombre completo ---
   const nombreCompleto =
-    (user?.nombre ? `${user.nombre} ${user.apellido || ''}`.trim() : null) ||
-    (progresoData.alumno?.nombre ? `${progresoData.alumno.nombre} ${progresoData.alumno.apellido || ''}`.trim() : null) ||
+    (user?.nombre? `${user.nombre} ${user.apellido || ''}`.trim() : null) ||
+    (progresoData.alumno?.nombre? `${progresoData.alumno.nombre} ${progresoData.alumno.apellido || ''}`.trim() : null) ||
     localStorage.getItem('alumno_nombre') ||
     'Alumno';
 
@@ -269,7 +301,7 @@ export default function Inicio() {
           return (
             <article
               key={modulo.id}
-              className={`modulo-card ${modulo.destacado ? 'destacado' : ''} ${!desbloqueado ? 'bloqueado' : ''}`}
+              className={`modulo-card ${modulo.destacado? 'destacado' : ''} ${!desbloqueado? 'bloqueado' : ''}`}
             >
               <div className="modulo-header">
                 <h2>Módulo {modulo.id}: {modulo.nombre}</h2>
