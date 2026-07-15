@@ -5,7 +5,7 @@ import axios from "axios";
 import { MessageCircle, CheckCircle2, Lock, Circle } from "lucide-react";
 import "../Css/Temario.css";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 function Temario() {
   const navigate = useNavigate();
@@ -21,8 +21,7 @@ function Temario() {
       }
 
       try {
-        // Este endpoint debe devolver todos los contenidos completados del usuario
-      const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
         const res = await axios.get(
           `${API_URL}/api/alumno/progreso/contenidos-completados/${correo}`,
           {
@@ -35,8 +34,10 @@ function Temario() {
         // Agrupamos por modulo_id: {1: [1,2,3], 2: [1,2],...}
         const agrupados = {};
         res.data.forEach(item => {
+          // Soporta que el backend devuelva num_contenido o contenido_id
+          const numCont = item.num_contenido || item.contenido_id || item.num_contenido_id;
           if (!agrupados[item.modulo_id]) agrupados[item.modulo_id] = [];
-          agrupados[item.modulo_id].push(item.num_contenido);
+          agrupados[item.modulo_id].push(numCont);
         });
 
         setCompletados(agrupados);
@@ -136,14 +137,30 @@ function Temario() {
     return completados[moduloId]?.includes(contenidoId) || false;
   };
 
+  const moduloCompleto = (moduloId) => {
+    const seccion = secciones.find(s => s.moduloId === moduloId);
+    if (!seccion) return false;
+    // El módulo está completo si tiene el último contenido (examen) completado
+    return estaCompletado(moduloId, seccion.temas.length);
+  };
+
   const estaBloqueado = (moduloId, contenidoId) => {
-    if (contenidoId === 1) return false; // El primero siempre abierto
-    return !estaCompletado(moduloId, contenidoId - 1); // Bloqueado si el anterior no está
+    // NUEVO: Bloqueo entre módulos - Si el módulo anterior no está completo, todo este módulo está bloqueado
+    if (moduloId > 1 &&!moduloCompleto(moduloId - 1)) {
+      return true;
+    }
+    // Bloqueo dentro del mismo módulo
+    if (contenidoId === 1) return false; // El primero siempre abierto si el módulo está desbloqueado
+    return!estaCompletado(moduloId, contenidoId - 1); // Bloqueado si el anterior no está
   };
 
   const handleClick = (tema, moduloId) => {
     if (estaBloqueado(moduloId, tema.contenidoId)) {
-      alert("Contenido bloqueado. Debes completar los temas anteriores en orden.");
+      if(moduloId > 1 &&!moduloCompleto(moduloId - 1)){
+        alert(`Módulo ${moduloId} bloqueado. Debes completar el examen del Módulo ${moduloId - 1} para desbloquearlo.`);
+      } else {
+        alert("Contenido bloqueado. Debes completar los temas anteriores en orden.");
+      }
       return;
     }
     window.scrollTo(0, 0);
@@ -156,40 +173,47 @@ function Temario() {
     <div className="temario-container">
       <h1 className="temario-titulo">📋 Temario del Curso</h1>
 
-      {secciones.map((seccion, idx) => (
-        <div key={idx} className="modulo-card">
-          <h2 className="modulo-titulo">{seccion.icon} {seccion.titulo}</h2>
-          <div className="temas-lista">
-            {seccion.temas.map((tema) => {
-              const completado = estaCompletado(seccion.moduloId, tema.contenidoId);
-              const bloqueado = estaBloqueado(seccion.moduloId, tema.contenidoId);
+      {secciones.map((seccion, idx) => {
+        const moduloBloqueado = seccion.moduloId > 1 &&!moduloCompleto(seccion.moduloId - 1);
 
-              return (
-                <div
-                  key={tema.id}
-                  className={`tema-item ${bloqueado ? 'bloqueado' : 'disponible'} ${completado ? 'completado' : ''}`}
-                  onClick={() => handleClick(tema, seccion.moduloId)}
-                >
-                  <span className="tema-icono">
-                    {bloqueado ? (
-                      <Lock size={16} />
-                    ) : completado ? (
-                      <CheckCircle2 size={16} color="#22c55e" />
-                    ) : (
-                      <Circle size={16} color="#94a3b8" />
-                    )}
-                  </span>
-                  <span className="tema-nombre">
-                    {tema.contenidoId}. {tema.nombre}
-                  </span>
-                  {completado && <span className="check-text">Completado</span>}
-                  {bloqueado && <span className="check-text">Bloqueado</span>}
-                </div>
-              );
-            })}
+        return (
+          <div key={idx} className={`modulo-card ${moduloBloqueado? 'modulo-bloqueado' : ''}`}>
+            <h2 className="modulo-titulo">
+              {seccion.icon} {seccion.titulo}
+              {moduloBloqueado && <Lock size={18} style={{marginLeft: '8px'}} />}
+            </h2>
+            <div className="temas-lista">
+              {seccion.temas.map((tema) => {
+                const completado = estaCompletado(seccion.moduloId, tema.contenidoId);
+                const bloqueado = estaBloqueado(seccion.moduloId, tema.contenidoId);
+
+                return (
+                  <div
+                    key={tema.id}
+                    className={`tema-item ${bloqueado? 'bloqueado' : 'disponible'} ${completado? 'completado' : ''}`}
+                    onClick={() => handleClick(tema, seccion.moduloId)}
+                  >
+                    <span className="tema-icono">
+                      {bloqueado? (
+                        <Lock size={16} />
+                      ) : completado? (
+                        <CheckCircle2 size={16} color="#22c55e" />
+                      ) : (
+                        <Circle size={16} color="#94a3b8" />
+                      )}
+                    </span>
+                    <span className="tema-nombre">
+                      {tema.contenidoId}. {tema.nombre}
+                    </span>
+                    {completado && <span className="check-text">Completado</span>}
+                    {bloqueado && <span className="check-text">Bloqueado</span>}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
 
       <div className="whatsapp-support-container">
         <a
