@@ -24,10 +24,10 @@ function Temario() {
         // Este endpoint debe devolver todos los contenidos completados del usuario
       const token = localStorage.getItem("token");
         const res = await axios.get(
-          `${API_URL}/api/alumno/progreso/contenidos-completados/${correo}`,
+          ${API_URL}/api/alumno/progreso/contenidos-completados/${correo},
           {
             headers: {
-              Authorization: `Bearer ${token}`
+              Authorization: Bearer ${token}
             }
           }
         );
@@ -147,7 +147,7 @@ function Temario() {
       return;
     }
     window.scrollTo(0, 0);
-    navigate(`/modulo/${moduloId}/contenido/${tema.contenidoId}`);
+    navigate(/modulo/${moduloId}/contenido/${tema.contenidoId});
   };
 
   if (loading) return <div className="temario-container"><p>Cargando progreso...</p></div>;
